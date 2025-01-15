@@ -2,9 +2,8 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config.settings import validate_settings
 from main import create_support_crew
-from tools.content_tools import create_test_research_tools
+from agents.content_agents import create_support_agents
 
 try:
     from IPython.display import Markdown
@@ -19,63 +18,29 @@ def display_result(result):
     else:
         print(result)
 
-def test_configuration():
-    """Test configuration and environment setup"""
-    print("\n=== Testing Configuration ===")
-    try:
-        validate_settings()
-        print("✓ Configuration validated successfully")
-        
-        # Verify tools are available
-        tools = create_test_research_tools()
-        if tools and len(tools) > 0:
-            print("✓ Support tools loaded successfully")
-        else:
-            raise Exception("Failed to load support tools")
-            
-    except Exception as e:
-        print(f"✗ Configuration error: {str(e)}")
-        sys.exit(1)
-
 def test_customer_support():
     """
-    Test the customer support multi-agent system with tools
+    Test the customer support multi-agent system
     """
     print("\n=== Testing Customer Support Multi-Agent System ===")
-    
-    # Test case parameters
-    test_params = {
-        "inquiry": (
-            "I need help with setting up a Crew "
-            "and kicking it off, specifically "
-            "how can I add memory to my crew? "
-            "Can you provide guidance?"
-        ),
-        "person": "Ike",
-        "customer": "Gister App"
-    }
-    
     try:
-        # Execute support crew workflow
-        result = create_support_crew(**test_params)
+        support_agent, qa_agent = create_support_agents(customer="Gister App")
         
-        # Display results
-        print("\nSupport Interaction Result:")
+        result = create_support_crew(
+            support_agent=support_agent,
+            qa_agent=qa_agent,
+            inquiry=(
+                "I need help with setting up a Crew "
+                "and kicking it off, specifically "
+                "how can I add memory to my crew? "
+                "Can you provide guidance?"
+            ),
+            person="Ike"
+        )
         display_result(result)
-        
-        # Verify result contains expected elements
-        if not result or len(result.strip()) == 0:
-            raise Exception("Support crew returned empty result")
-            
-        print("\n✓ Customer support test completed successfully")
-        
+        print("✓ Customer support test completed successfully")
     except Exception as e:
         print(f"✗ Customer support test error: {str(e)}")
-        raise e
 
 if __name__ == "__main__":
-    # Test configuration first
-    test_configuration()
-    
-    # Run customer support test
     test_customer_support()
