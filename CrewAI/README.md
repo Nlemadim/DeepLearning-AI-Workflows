@@ -2,7 +2,7 @@
 
 A modular and extensible content generation system built with CrewAI that demonstrates multi-agent collaboration for content creation. This system uses a team of AI agents (planner, writer, and editor) to generate high-quality content on any given topic.
 
-##�� Project Structure 
+## Project Structure 
 
 ```
 CrewAI/
@@ -75,7 +75,45 @@ python main.py
 ```bash
 jupyter notebook
 ```
-Then open and run the provided notebook cells.
+
+#### Using Jupyter Notebook
+
+Create a new notebook (e.g., `crewai_test.ipynb`) and use this example:
+
+```python
+# Import required modules
+from main import create_content_crew, create_support_crew
+from config.topics import get_topic
+from IPython.display import Markdown, display
+
+# Test content creation
+def test_content():
+    topic = get_topic("technology")
+    result = create_content_crew(topic)
+    display(Markdown(result))
+
+# Test support system
+def test_support():
+    result = create_support_crew(
+        inquiry="How do I add memory to my crew?",
+        person="John",
+        customer="Tech Corp"
+    )
+    display(Markdown(result))
+
+# Run tests
+print("Testing Content Creation:")
+test_content()
+
+print("\nTesting Support System:")
+test_support()
+```
+
+**Note**: Jupyter Notebook provides:
+- Interactive execution of code cells
+- Rich markdown rendering of results
+- Real-time debugging capabilities
+- Ability to save and share results
 
 ## 🔧 Features
 
@@ -159,6 +197,40 @@ Tasks define the work each agent needs to perform. Each task includes:
 - A detailed description
 - Expected output format
 - Assigned agent
+
+### Task Setup with Tools
+
+Tasks can be configured with specific tools that override agent-level tools:
+
+```python
+# Create a tool instance
+research_tool = create_test_research_tools()[0]
+
+# Task with specific tool
+support_task = Task(
+    description="Handle customer inquiry about {topic}",
+    expected_output="Detailed response addressing inquiry",
+    tools=[research_tool],  # Tool assigned at task level
+    agent=support_agent
+)
+```
+
+#### Tool Assignment Hierarchy:
+
+1. **Agent-Level Tools**:
+   - Available for all tasks
+   - Agent has discretionary use
+
+2. **Task-Level Tools**:
+   - Override agent's default tools
+   - Exclusively used for specific task
+   - Provide precise control
+
+#### Best Practices:
+- Assign general-purpose tools at agent level
+- Use task-specific tools for specialized operations
+- Document tool dependencies clearly
+- Test tool availability before task execution
 
 To add a new task:
 ```python
