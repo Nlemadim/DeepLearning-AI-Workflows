@@ -1,7 +1,48 @@
+
+
+"""
+Content Tools Module
+===================
+
+This module manages the creation and organization of tools for CrewAI agents.
+
+Tool Assignment Hierarchy:
+-------------------------
+
+Tools in CrewAI can be assigned at two levels:
+
+1. Agent Level:
+   - Tools assigned directly to an agent are available for all tasks
+   - The agent has discretionary use of these tools
+   
+2. Task Level:
+   - Tools assigned to specific tasks override agent-level tools
+   - When a task has assigned tools, the agent will ONLY use those tools
+   - This provides precise control over tool usage for specific tasks
+
+Visual Representation:
+---------------------
+
+                     Assigning Tools
+                     
+                    ┌──────────────┐
+                    │    Tools     │
+                    └──────┬───────┘
+                           │
+                 ┌────────┴────────┐
+                 │                  │
+        ┌────────┴───────┐    ┌────┴────┐
+        │     Agent      │    │  Task   │
+        │   (Default)    │    │(Override)│
+        └────────────────┘    └─────────┘
+
+Notes:
+- Tools assigned to Agent: Available for all tasks (discretionary use)
+- Tools assigned to Task: Exclusively used for that specific task
+"""
+
 from crewai import Task
 from tools.content_tools import create_test_research_tools
-
-docs_scrape_tool = create_test_research_tools()[0]
 
 def create_content_tasks(planner, writer, editor):
     """
@@ -52,8 +93,8 @@ def create_content_tasks(planner, writer, editor):
         agent=editor
     )
 
-
     return [plan, write, edit]
+
 
 def customer_support_task(support_agent, qa_agent):
     """
@@ -66,6 +107,8 @@ def customer_support_task(support_agent, qa_agent):
     Returns:
         list: List of tasks for the support workflow
     """
+    docs_scrape_tool = create_test_research_tools()[0]
+
     support_inquiry = Task(
         description=(
             "{customer} just reached out with a super important ask:\n"
@@ -118,46 +161,3 @@ def customer_support_task(support_agent, qa_agent):
     
     return [support_inquiry, quality_review]
 
-
-
-
-"""
-Content Tools Module
-===================
-
-This module manages the creation and organization of tools for CrewAI agents.
-
-Tool Assignment Hierarchy:
--------------------------
-
-Tools in CrewAI can be assigned at two levels:
-
-1. Agent Level:
-   - Tools assigned directly to an agent are available for all tasks
-   - The agent has discretionary use of these tools
-   
-2. Task Level:
-   - Tools assigned to specific tasks override agent-level tools
-   - When a task has assigned tools, the agent will ONLY use those tools
-   - This provides precise control over tool usage for specific tasks
-
-Visual Representation:
----------------------
-
-                     Assigning Tools
-                     
-                    ┌──────────────┐
-                    │    Tools     │
-                    └──────┬───────┘
-                           │
-                 ┌────────┴────────┐
-                 │                  │
-        ┌────────┴───────┐    ┌────┴────┐
-        │     Agent      │    │  Task   │
-        │   (Default)    │    │(Override)│
-        └────────────────┘    └─────────┘
-
-Notes:
-- Tools assigned to Agent: Available for all tasks (discretionary use)
-- Tools assigned to Task: Exclusively used for that specific task
-"""
