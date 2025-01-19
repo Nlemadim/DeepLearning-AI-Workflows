@@ -6,6 +6,7 @@ load_dotenv()
 
 # API Keys
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+SERPER_API_KEY = os.getenv('SERPER_API_KEY')
 
 # Model Settings
 DEFAULT_MODEL = "gpt-4-turbo"
@@ -21,6 +22,8 @@ def validate_settings():
     """Validate that all required settings are present"""
     if not OPENAI_API_KEY:
         raise ValueError("OPENAI_API_KEY is not set in environment variables")
+    if not SERPER_API_KEY:
+        raise ValueError("SERPER_API_KEY is not set in environment variables")
 
 # Initialize settings validation
 validate_settings() 
