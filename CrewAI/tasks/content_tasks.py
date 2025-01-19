@@ -164,6 +164,7 @@ def customer_support_task(support_agent, qa_agent):
     return [support_inquiry, quality_review]
 
 
+
 def create_travel_tasks(travel_planner_consultant, travel_info_coordinator, inputs):
     """
     Create and return the travel-related tasks
@@ -244,7 +245,6 @@ def create_travel_tasks(travel_planner_consultant, travel_info_coordinator, inpu
 
     return [gather_info, search_tickets, travel_guide, summarize_travel_info]
 
-
 def test_travel_agent_task(travel_planner_consultant, travel_info_coordinator):
     """
     Test Travel Agent Task with default travel details
@@ -273,7 +273,7 @@ def test_travel_agent_task(travel_planner_consultant, travel_info_coordinator):
         travel_companions=0,
         companion_type=None,
         pet_type=None,
-        preferred_flight="Direct",
+        preferred_flight=None,
         flexible_dates=False
     )
 
@@ -293,7 +293,7 @@ def test_travel_agent_task(travel_planner_consultant, travel_info_coordinator):
             f"Preferred Flight: {travel_details['preferred_flight']}\n"
         ),
         expected_output="A summary of travel options based on the provided details.",
-        tools=[TicketSearchTool(), TravelGuideTool()],
+        tools=[TicketSearchTool()],
         agent=travel_planner_consultant,
         allow_delegation=False,
         verbose=True
@@ -310,6 +310,7 @@ def test_travel_agent_task(travel_planner_consultant, travel_info_coordinator):
             "Ensure the summary is clear and allows the user to make an informed decision."
         ),
         expected_output="A comprehensive summary of travel options, weather, accommodations, and attractions.",
+        tools=[TravelGuideTool()],
         agent=travel_info_coordinator,
         allow_delegation=False,
         verbose=True
